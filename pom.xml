@@ -80,6 +80,7 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+					<finalName>solactive-price-tracker</finalName>
 				</configuration>
 			</plugin>
 		</plugins>

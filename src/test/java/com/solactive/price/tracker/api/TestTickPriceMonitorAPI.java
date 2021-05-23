@@ -30,7 +30,9 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,10 +46,6 @@ public class TestTickPriceMonitorAPI {
     private static String[] tickrArray = new String[] {"IBM_N", "TCS", "MICROSOFT", "FORD", "MERCEDES", "TESLA"
             , "NASA", "AMAZON","EBAY", "GOOGLE", "RBS"};
 
-
-
-    private static ExecutorService executor = Executors.newFixedThreadPool(4);
-
     @LocalServerPort
     int randomServerPort;
 
@@ -56,6 +54,55 @@ public class TestTickPriceMonitorAPI {
 
     @Autowired
     TickPriceService tickPriceService;
+
+    private static ExecutorService executor = Executors.newFixedThreadPool(4);
+    @Test
+    public void testBulkPosting() throws URISyntaxException {
+
+
+        List<CompletableFuture<ResponseEntity<String>>> asyncTasks = new ArrayList<CompletableFuture<ResponseEntity<String>>>();
+        final String baseUrl = "http://localhost:"+randomServerPort+"/tick/";
+        URI uri = new URI(baseUrl);
+
+
+        for(int i=0;i<50;i++) {
+            CompletableFuture<ResponseEntity<String>> c= CompletableFuture.supplyAsync(()->{
+
+                Tick tick = new Tick( System.currentTimeMillis(),tickrArray[(int) (Math.random() * tickrArray.length - 1)],Math.random() * 100.0);
+
+                HttpHeaders headers = new HttpHeaders();
+                HttpEntity<Tick> request = new HttpEntity<>(tick, headers);
+                ResponseEntity<String> result = this.restTemplate.postForEntity(uri, request, String.class);
+                Assert.assertEquals(201, result.getStatusCodeValue());
+                return result;
+            }, executor);
+
+            asyncTasks.add(c);
+        }
+        for (CompletableFuture<ResponseEntity<String>> taskAsync : asyncTasks)
+        {
+            taskAsync.join();
+        }
+
+        CompletableFuture.allOf()
+                .thenRun(()->{
+                    String getbaseUrl = "http://localhost:"+randomServerPort+"/statistics/";
+                    URI uriget = null;
+                    try {
+                        uriget = new URI(getbaseUrl);
+                    } catch (URISyntaxException e) {
+                        e.printStackTrace();
+                    }
+
+                    HttpHeaders headers = new HttpHeaders();
+
+                    ResponseEntity<Statistics> result = this.restTemplate.getForEntity(uriget,  Statistics.class);
+
+                    //Verify request succeed
+                    Assert.assertEquals(50.0, result.getBody().getCount(),0.0);
+                });
+
+    }
 
     @Test
     public void testUpdateTickrPrice() throws URISyntaxException {

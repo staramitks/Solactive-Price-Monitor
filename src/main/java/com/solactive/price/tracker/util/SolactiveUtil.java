@@ -1,7 +1,10 @@
 package com.solactive.price.tracker.util;
 
+import com.solactive.price.tracker.model.Tick;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -21,6 +24,14 @@ public  class SolactiveUtil {
         return tickTimeInstant.isAfter(now);
     }
 
+    public static boolean isBadRequest(Tick tick)
+    {
+        if (tick==null || tick.getPrice()<0 || tick.getInstrument().isBlank() || tick.getTimestamp()==null)
+        {
+            return true;
+        }
+        return false;
+    }
 
 
 

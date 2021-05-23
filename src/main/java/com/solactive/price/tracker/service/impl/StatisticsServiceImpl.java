@@ -53,7 +53,6 @@ public class StatisticsServiceImpl implements StatisticsService {
         rwlock.writeLock().lock();
         try {
             latestStatistics = computedStat;
-            //chm : removeIf EntrySetView, removeIf not thread safe, usages default
             tickStatisticsMap.entrySet().removeIf(x-> !tickPriceMultiMap.keySet().contains(x.getKey()));
         }finally {
             rwlock.writeLock().unlock();

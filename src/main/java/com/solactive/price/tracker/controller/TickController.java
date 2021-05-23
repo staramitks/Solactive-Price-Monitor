@@ -20,6 +20,12 @@ public class TickController {
 
     @PostMapping(value="/tick")
     public ResponseEntity<String> updateTickrPrice(@RequestBody Tick tick){
+
+        // Check if request is bad
+        if (SolactiveUtil.isBadRequest(tick))
+        {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         // if price is within last 60 seconds and not after current timestamp then only save the record
         if(SolactiveUtil.isValidPriceRecord(tick.getTimestamp())) {
             TickResponse tickResponse = tickPriceService.save(tick);

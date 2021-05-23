@@ -10,17 +10,17 @@
 
 ## Information
  - API Information is provided by Swagger UI Integration.
- - http://localhost:8080/swagger-ui.html
+ - http://localhost:8090/swagger-ui.html
 
 ## Assumptions
  - If no statistics is available for last 60 seconds then 404 status code will be returned with JSON object as 0 for all statistics keys.
+ - Records older than 60 seconds are not required to be persisted
 
 ## Technical Specifications
  - SpringBoot Version - 2.5.0
  - Java Version - 11.0.8-win64
  - Build - Maven
  
-## Run Command
 
  
  

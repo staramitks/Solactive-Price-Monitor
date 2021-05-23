@@ -26,7 +26,7 @@ public  class SolactiveUtil {
 
     public static boolean isBadRequest(Tick tick)
     {
-        if (tick==null || tick.getPrice()<0 || tick.getInstrument().isBlank() || tick.getTimestamp()==null)
+        if (tick==null || tick.getInstrument()==null || tick.getPrice()<=0 || tick.getInstrument().isBlank() || tick.getTimestamp()==null)
         {
             return true;
         }

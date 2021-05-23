@@ -38,17 +38,13 @@ public class TickPriceServiceImpl implements TickPriceService {
 
     @Scheduled(fixedRate = 1 * 1000)
     public void refreshStatistics() {
-        //1. clear stale data
-        System.out.println("Clearing Stale Data after "+System.currentTimeMillis());
         clearStaleData();
-        //2. update statistics
         statService.updateStatistics(tickPriceMultiMap);
     }
 
     private void clearStaleData() {
 
         Iterator<List<Tick>> iterator = tickPriceMultiMap.values().iterator();
-        System.out.println("Before Size is tickIdentifierMultiMap "+ tickPriceMultiMap.keySet().size());
         while(iterator.hasNext()) {
             iterator.next().removeIf(x-> !SolactiveUtil.isValidPriceRecord(x.getTimestamp()));
         }

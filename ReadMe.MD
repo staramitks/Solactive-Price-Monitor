@@ -1,12 +1,17 @@
-### About
+# About
  - Solactive Coding Challenge
 
-### Running The Project
+# Running The Project
+## Option 1 - From Repository and building from maven and running as jar file
  - Checkout Project - git clone https://github.com/staramitks/Solactive-Price-Monitor.git
  - Go To Project Directory and Execute ```maven clean install```
  - Execute ```java -Dserver.port=8090 -jar target/solactive-price-tracker.jar```
  - Check if project is running fine by checking http://localhost:8090/home - It should show Hello World
-
+## Option 2 - Running from a image pushed in Docker hub - Image has been pushed on registry.hub.docker.com as staramitks/price-tracker:v1
+ - Execute this docker command for running the image in a container ``` docker container run -itd --name price-container -p 8080:8080 staramitks/price-tracker:v1```
+ - This will run docker process in local system and accessible on port 8080
+ - Check if project is running fine by checking http://localhost:8080/home - It should show Hello World
+ 
 ## Improvements
  - If I had more time, I would like to test it with load testing tools like JMeter and also check on performance benchmarks
  
